@@ -81,6 +81,8 @@ services:
         taskmanager.memory.process.size: 3200m
         taskmanager.numberOfTaskSlots: 15
         parallelism.default: 1
+
+    streamlit:
 volumes:
   redpanda_data:
   postgres_data:
