@@ -85,8 +85,8 @@ services:
   streamlit:
     build:
         context: .
-        dockerfile: ./streamlit/Dockerfile
-    image: streamlit
+        dockerfile: ./Dockerfile.flink
+      image: pyflink-workshop
 volumes:
   redpanda_data:
   postgres_data:
