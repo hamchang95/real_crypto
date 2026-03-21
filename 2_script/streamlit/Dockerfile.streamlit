@@ -2,26 +2,22 @@
 FROM python:3.12-slim
 
 # create folder in the container
-WORKDIR /streamlit
+WORKDIR /app
 
-# install git
 RUN apt-get update && apt-get install -y \
-    curl \
-    git \
+    build-essential libpq-dev python3-dev curl git \
     && rm -rf /var/lib/apt/lists/*
-
-# clone repo
-RUN git clone https://github.com/hamchang95/real_crypto.git .
 
 # install uv
 RUN curl -Ls https://astral.sh/uv/install.sh | sh
 ENV PATH="/root/.local/bin:$PATH"
 
-# add modules
-RUN uv pip install --system -r 2_script/streamlit/requirements.txt
+# install dependencies
+COPY streamlit/ ./streamlit/
+RUN uv pip install --system -r streamlit/requirements.txt
 
 EXPOSE 8501
 
 HEALTHCHECK CMD curl --fail http://localhost:8501/_stcore/health
 
-ENTRYPOINT ["streamlit", "run", "2_script/0_docker/streamlit/streamlit_app.py", "--server.port=8501", "--server.address=0.0.0.0"]
+ENTRYPOINT ["streamlit", "run", "/app/streamlit/streamlit_app.py", "--server.port=8501", "--server.address=0.0.0.0", "--server.headless=true"]
