@@ -15,6 +15,8 @@ services:
     ports:
       - "9092:9092"
       - "29092:29092"
+    expose:
+      - "9644"
     mem_limit: 600m
     restart: unless-stopped
     healthcheck:
@@ -36,6 +38,7 @@ services:
       - "6123"
     ports:
       - "8081:8081"
+      - "9249:9249"
     volumes:
       - ./flink/:/opt/flink/usrlib
       - ./flink/src/:/opt/src
@@ -55,6 +58,7 @@ services:
     expose:
       - "6121"
       - "6122"
+      - "9249"
     volumes:
       - ./flink:/opt/flink/usrlib
       - ./flink/src/:/opt/src
@@ -72,13 +76,17 @@ services:
         taskmanager.memory.process.size: 3200m
         taskmanager.numberOfTaskSlots: 15
         parallelism.default: 1
-  #prometheus:
-    #image: prom/prometheus:v2.51.0
-    #volumes:
-    #  - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
-    #ports:
-    #  - "9090:9090"
-    #depends_on: [redpanda, jobmanager]
+  prometheus:
+    image: prom/prometheus:v2.51.0
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    ports:
+      - "9090:9090"
+    depends_on:
+      redpanda:
+        condition: service_healthy
+      jobmanager:
+        condition: service_started
 
 volumes:
   redpanda_data:
