@@ -1,1 +1,4 @@
-svc.*json
+*.json
+.env
+.venv
+99_secrets

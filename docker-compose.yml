@@ -1,0 +1,84 @@
+services:
+  redpanda:
+    image: redpandadata/redpanda:v25.3.10
+    volumes:
+      - redpanda_data:/var/lib/redpanda/data
+    command:
+      - redpanda start
+      - --smp 1
+      - --memory 512M
+      - --reserve-memory 0M
+      - --overprovisioned
+      - --node-id 0
+      - --kafka-addr PLAINTEXT://0.0.0.0:9092,PLAINTEXT_HOST://0.0.0.0:29092
+      - --advertise-kafka-addr PLAINTEXT://redpanda:9092,PLAINTEXT_HOST://localhost:29092
+    ports:
+      - "9092:9092"
+      - "29092:29092"
+    mem_limit: 600m
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "rpk", "cluster", "info", "--brokers", "localhost:9092"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+  jobmanager:
+    build:
+      context: .
+      dockerfile: ./flink/Dockerfile.flink
+    env_file:
+      - .env
+    image: pyflink
+    restart: on-failure
+    pull_policy: never
+    expose:
+      - "6123"
+    ports:
+      - "8081:8081"
+    volumes:
+      - ./flink/:/opt/flink/usrlib
+      - ./flink/src/:/opt/src
+    command: jobmanager
+    environment:
+      - |
+        FLINK_PROPERTIES=
+        jobmanager.rpc.address: jobmanager
+      - GOOGLE_APPLICATION_CREDENTIALS=/99_secrets/svc_infra.json
+    depends_on:
+      redpanda:
+        condition: service_healthy
+  taskmanager:
+    image: pyflink
+    pull_policy: never
+    restart: on-failure
+    expose:
+      - "6121"
+      - "6122"
+    volumes:
+      - ./flink:/opt/flink/usrlib
+      - ./flink/src/:/opt/src
+      - ./99_secrets:/99_secrets:ro
+    depends_on:
+      jobmanager:
+        condition: service_started
+      redpanda:
+        condition: service_healthy
+    command: taskmanager --taskmanager.registration.timeout 5 min
+    environment:
+      - |
+        FLINK_PROPERTIES=
+        jobmanager.rpc.address: jobmanager
+        taskmanager.memory.process.size: 3200m
+        taskmanager.numberOfTaskSlots: 15
+        parallelism.default: 1
+  #prometheus:
+    #image: prom/prometheus:v2.51.0
+    #volumes:
+    #  - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    #ports:
+    #  - "9090:9090"
+    #depends_on: [redpanda, jobmanager]
+
+volumes:
+  redpanda_data:

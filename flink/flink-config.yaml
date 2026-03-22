@@ -30,7 +30,7 @@ query:
   server:
     port: '6125'
 parallelism:
-  default: 3
+  default: 1
 rest:
   address: 0.0.0.0
 env:
@@ -51,3 +51,5 @@ env:
         --add-opens=java.base/java.util.concurrent=ALL-UNNAMED
         --add-opens=java.base/java.util.concurrent.atomic=ALL-UNNAMED
         --add-opens=java.base/java.util.concurrent.locks=ALL-UNNAMED
+  metrics.reporter.prom.factory.class: org.apache.flink.metrics.prometheus.PrometheusReporterFactory
+  metrics.reporter.prom.port: 9249
