@@ -1,5 +1,5 @@
 # Real Crypto
-![high level design](https://github.com/hamchang95/real_crypto/blob/main/ref/hld.jpg)
+![high level design](https://github.com/hamchang95/real_crypto/blob/main/ref/hld.svg)
 ## Prerequisites
 
 1. Create a free Coinbase Developer Platform account at https://portal.cdp.coinbase.com
