@@ -1,10 +1,15 @@
 # Real Crypto
+This repo is a project repository for real-time pipeline of cryptocurrency market.
+
 ![high level design](https://raw.githubusercontent.com/hamchang95/real_crypto/89cde42fbd36e730a2c8a0f079c4659a89819ad6/ref/hld.svg)
 - Coinbase WebSocket producer sends ticker messages to Redpanda (Kafka-compatible broker).
 - Flink consumes messages from Redpanda and runs aggregation job.
-- Raw ticks are written to GCS bucket (cold storage, replay insurance).
+- Raw ticks are written to GCS bucket.
 - Aggregated OHLCV/spread windows are written to BigQuery.
-- Streamlit queries BigQuery and displays the dashboard./
+- Streamlit queries BigQuery and displays the dashboard.
+
+average spread per window
+price change per window
 [🔗Notes on architecture](https://github.com/hamchang95/real_crypto/blob/main/ref/notes_architecture.md)
 
 ## Prerequisites
