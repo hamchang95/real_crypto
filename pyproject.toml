@@ -5,6 +5,7 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
+    "apache-flink>=2.2.0",
     "coinbase-advanced-py>=1.8.2",
     "cryptography>=46.0.5",
     "dataclasses>=0.8",
@@ -14,7 +15,6 @@ dependencies = [
     "kafka-python>=2.3.0",
     "numpy<2",
     "pandas<3",
-    "pyflink>=1.0",
     "pyjwt>=2.12.1",
     "python-dotenv>=1.2.2",
     "typing>=3.10.0.0",

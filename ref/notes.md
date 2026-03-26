@@ -1,0 +1,7 @@
+- [x] delete topic ticks
+- [x] check number of products: 381
+- [x] parition topic
+    - docker exec -it real_crypto-redpanda-1 rpk topic create ticks \
+        --partitions 50 \
+        --replicas 1
+- [] tumble window py

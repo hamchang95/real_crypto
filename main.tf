@@ -45,20 +45,19 @@ resource "google_bigquery_table" "default" {
 
   time_partitioning {
     type  = "HOUR"
-    field = "window_start"
+    field = "timestamp"
   }
 
   clustering = ["product_id"]
 
   schema = jsonencode([
     { name = "product_id",       type = "STRING",    mode = "REQUIRED" },
-    { name = "window_start",     type = "TIMESTAMP", mode = "REQUIRED" },
-    { name = "window_end",       type = "TIMESTAMP", mode = "REQUIRED" },
+    { name = "timestamp",     type = "TIMESTAMP", mode = "REQUIRED" },
     { name = "price",            type = "FLOAT64",   mode = "REQUIRED" },
     { name = "low_24h",          type = "FLOAT64",   mode = "REQUIRED" },
     { name = "high_24h",         type = "FLOAT64",   mode = "REQUIRED" },
     { name = "price_per_chg_24h",type = "FLOAT64",   mode = "NULLABLE" },
-    { name = "volume",           type = "FLOAT64",   mode = "REQUIRED" },
+    { name = "volume_24h",           type = "FLOAT64",   mode = "REQUIRED" },
     { name = "best_ask",         type = "FLOAT64",   mode = "REQUIRED" },
     { name = "best_bid",         type = "FLOAT64",   mode = "REQUIRED" },
     { name = "spread",         type = "FLOAT64",   mode = "REQUIRED" },
