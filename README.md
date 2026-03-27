@@ -21,6 +21,8 @@ The pipeline processes data with sub-minute latency — from Coinbase WebSocket 
 
 ## Architecture
 <img src="https://raw.githubusercontent.com/hamchang95/real_crypto/main/ref/hld.png" width="800" alt="High Level Design">
+> [!TIP]
+> Click on the image to view it bigger.
 
 ## Technologies Used
 | Component | Technology | Purpose |
