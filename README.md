@@ -160,19 +160,15 @@ real_crypto/
 ├── flink/
 │   ├── src/
 │   │   ├── consume_ticks_tumble.py    # PyFlink job — stream processing pipeline
+│   │   ├── produce_ticks.py           # Coinbase WebSocket → Redpanda producer
 │   │   └── models.py                  # Tick, EnrichedTick, OHLCVRow dataclasses
 │   ├── Dockerfile.flink               # Flink image with PyFlink and connector JARs
 │   ├── flink-config.yaml              # Flink cluster configuration
 │   └── pyproject.flink.toml          # PyFlink job dependencies
-├── terraform/
-│   ├── main.tf                        # BigQuery dataset, table, GCS bucket
-│   ├── variables.tf                   
-│   └── outputs.tf                     
 ├── prometheus/
 │   └── prometheus.yml                 # Flink metrics scraping config
 ├── 99_secrets/                        # GCP service account key (gitignored)
 │   └── svc_infra.json                
-├── producer.py                        # Coinbase WebSocket → Redpanda producer
 ├── docker-compose.yml                 # Redpanda, Flink JobManager, TaskManager
 ├── pyproject.toml                     # Producer dependencies
 ├── .env.example                       # Environment variable template
