@@ -1,6 +1,7 @@
 import datetime as dt
 import dataclasses
 from dataclasses import dataclass
+from typing import Optional
 import json
 
 fields = {'timestamp', 'type', 'product_id', 'price', 
@@ -8,7 +9,7 @@ fields = {'timestamp', 'type', 'product_id', 'price',
           'best_ask', 'best_bid'}
 
 @dataclass
-class tick:
+class Tick:
     timestamp: int
     type: str
     product_id: str
@@ -20,12 +21,13 @@ class tick:
     best_ask: float
     best_bid: float
 
-def tick_from_dict(raw: str) -> tick:
+def tick_from_dict(raw: str) -> list[Tick]:
     # flatten out fields into a dictionary
     raw = json.loads(raw)
+    ticks = []
 
     if raw.get('channel') != 'ticker':
-        return None
+        return []
     
     for event in raw.get('events', []):
         tickers = event.get('tickers', [])
@@ -73,7 +75,7 @@ def tick_from_dict(raw: str) -> tick:
             if any(f<=0 for f in num_fields):
                 raise ValueError(f'Non-positive numeric field: {price}, {volume}, {low}, {high}, {chg}, {best_ask}, {best_bid}')
             
-            return tick(
+            ticks.append(Tick(
                 timestamp=ts_num,
                 type = d['type'],
                 product_id = d['product_id'],
@@ -84,12 +86,30 @@ def tick_from_dict(raw: str) -> tick:
                 price_per_chg_24h=chg,
                 best_ask = best_ask,
                 best_bid = best_bid
-            )
+            ))
+    return ticks
 
 def tick_serialiser(data) -> bytes:
     return json.dumps(dataclasses.asdict(data)).encode('utf-8')
 
-def tick_deserializer(data) -> tick:
-    json_str = data.decode('utf-8')
-    tick_dict = json.loads(json_str)
-    return tick(**tick_dict)
+def tick_deserializer(data) -> Tick:
+    tick_dict = json.loads(data)
+    return Tick(**tick_dict)
+
+@dataclass
+class EnrichedTick(Tick):
+    spread: float
+
+@dataclass
+class OHLCVRow:
+    product_id: str
+    window_start: dt.datetime
+    window_end: dt.datetime
+    price_open: float
+    price_close: float
+    avg_price: float
+    avg_volume: float
+    avg_spread: float
+    ind_vlty: Optional[float]
+    high_24h: float
+    low_24h: float

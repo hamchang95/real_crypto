@@ -5,7 +5,7 @@ import time
 import datetime as dt
 import os
 import sys
-from models import tick, tick_from_dict, tick_serialiser
+from models import Tick, tick_from_dict, tick_serialiser
 from kafka import KafkaProducer
 from kafka.errors import NoBrokersAvailable
 import requests
@@ -70,11 +70,12 @@ def main():
     secret = os.getenv('COINBASE_API_SECRET')
 
     def on_message(msg):
-        t = tick_from_dict(msg)
-        if t is None:
-            return   
-        producer.send(topic_name, value=t)
-        print(f'Sent {t}')
+        ticks = tick_from_dict(msg)
+        if not ticks:
+            return
+        for t in ticks:
+            producer.send(topic_name, value=t)
+            print(f'Sent {t}')
 
     def on_open():
         print("Connection opened!")

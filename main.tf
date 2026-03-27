@@ -38,31 +38,29 @@ resource "google_bigquery_dataset" "demo_dataset" {
   location   = var.location
 }
 
-resource "google_bigquery_table" "default" {
+resource "google_bigquery_table" "ohlcv" {
   dataset_id          = var.bq_dataset_name
-  table_id            = "ticker"
+  table_id            = "ohlcv"
   deletion_protection = false
 
   time_partitioning {
     type  = "HOUR"
-    field = "timestamp"
+    field = "window_start"
   }
 
   clustering = ["product_id"]
 
   schema = jsonencode([
-    { name = "product_id",       type = "STRING",    mode = "REQUIRED" },
-    { name = "timestamp",     type = "TIMESTAMP", mode = "REQUIRED" },
-    { name = "price",            type = "FLOAT64",   mode = "REQUIRED" },
-    { name = "low_24h",          type = "FLOAT64",   mode = "REQUIRED" },
-    { name = "high_24h",         type = "FLOAT64",   mode = "REQUIRED" },
-    { name = "price_per_chg_24h",type = "FLOAT64",   mode = "NULLABLE" },
-    { name = "volume_24h",           type = "FLOAT64",   mode = "REQUIRED" },
-    { name = "best_ask",         type = "FLOAT64",   mode = "REQUIRED" },
-    { name = "best_bid",         type = "FLOAT64",   mode = "REQUIRED" },
-    { name = "spread",         type = "FLOAT64",   mode = "REQUIRED" },
-    { name = "day_vlty",         type = "FLOAT64",   mode = "REQUIRED" },
-    { name = "ind_vlty",         type = "FLOAT64",   mode = "REQUIRED" },
-
+    { name = "product_id",    type = "STRING",    mode = "REQUIRED" },
+    { name = "window_start",  type = "TIMESTAMP", mode = "REQUIRED" },
+    { name = "window_end",    type = "TIMESTAMP", mode = "REQUIRED" },
+    { name = "price_open",    type = "FLOAT64",   mode = "REQUIRED" },
+    { name = "price_close",   type = "FLOAT64",   mode = "REQUIRED" },
+    { name = "avg_price",     type = "FLOAT64",   mode = "REQUIRED" },
+    { name = "avg_volume",  type = "FLOAT64",   mode = "REQUIRED" },
+    { name = "avg_spread",    type = "FLOAT64",   mode = "REQUIRED" },
+    { name = "ind_vlty",      type = "FLOAT64",   mode = "NULLABLE" },
+    { name = "high_24h",      type = "FLOAT64",   mode = "REQUIRED" },
+    { name = "low_24h",       type = "FLOAT64",   mode = "REQUIRED" },
   ])
 }
