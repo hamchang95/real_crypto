@@ -66,6 +66,7 @@ the following transformations:
 Looker Studio connects directly to BigQuery and refreshes automatically, displaying:
 - Top 5 coins by average bid-ask spread (categorical)
 - Average price, spread and volatility over time (temporal)
+[Looker Studio Dashboard](https://lookerstudio.google.com/reporting/32cf0abb-9e12-4ac3-b9f3-275159f07fb4)
 
 ## Reproducing the Project
 
@@ -158,7 +159,7 @@ uv run python producer.py 3600
 > The duration argument is in seconds. 3600 = 1 hour. Adjust as needed.
 
 ### 9. View the Dashboard
-[Looker Studio Dashboard](url)
+[Looker Studio Dashboard](https://lookerstudio.google.com/reporting/32cf0abb-9e12-4ac3-b9f3-275159f07fb4)
 
 ## Project Structure
 ```
