@@ -40,6 +40,9 @@ The pipeline processes data with sub-minute latency — from Coinbase WebSocket 
 ## Data Pipeline
 <img src="https://raw.githubusercontent.com/hamchang95/real_crypto/main/ref/lld.png" width="800" alt="Low Level Design">
 
+> [!TIP]
+> Click on the image to view it bigger.
+
 ### 1. Ingestion
 A Python producer connects to the Coinbase WebSocket API and subscribes to the ticker channel for 320+ USD trading pairs. Each ticker message is validated, parsed into a `Tick` object, serialised to JSON bytes and sent to a Redpanda topic.
 
@@ -169,7 +172,14 @@ real_crypto/
 │   ├── flink-config.yaml              # Flink cluster configuration
 │   └── pyproject.flink.toml          # PyFlink job dependencies
 ├── prometheus/
-│   └── prometheus.yml                 # Flink metrics scraping config
+│   └── prometheus.yml                 # Flink metrics scraping config - WORK IN PROGRESS
+├── terraform/
+│   ├── main.tf                        # BigQuery dataset, table, GCS bucket
+│   ├── variables.tf                   # Input variables
+│   └── outputs.tf                     # Output values
+├── ref/
+│   ├── hld.png                        # High level architecture diagram
+│   └── lld.png                        # Low level data flow diagram
 ├── 99_secrets/                        # GCP service account key (gitignored)
 │   └── svc_infra.json                
 ├── docker-compose.yml                 # Redpanda, Flink JobManager, TaskManager
@@ -178,3 +188,8 @@ real_crypto/
 ├── .gitignore                         
 └── README.md                          
 ```
+
+## Observability (Work in Progress)
+
+Prometheus is configured to scrape Flink metrics via the `prometheus/prometheus.yml` config file. 
+A Grafana dashboard for monitoring pipeline health (throughput, watermark lag, checkpoint duration) is planned but not yet implemented.
