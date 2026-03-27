@@ -15,8 +15,8 @@ it in real-time using Apache Flink, and delivers a dashboard showing:
 
 The pipeline processes data with sub-minute latency — from Coinbase WebSocket to BigQuery in under 60 seconds — giving traders and analysts an up-to-date view of market microstructure across the entire Coinbase USD market.
 
-> 💡 **Bid-Ask Spread**: The difference between the lowest price a seller will accept and the highest a buyer will pay. A narrow spread indicates high liquidity; a wide spread signals low liquidity or high uncertainty.
-> 💡 **Volatility Indicator**:The indicator that shows where the current price sits within  the coin's 24-hour high-low range.A value near 1 means the price is close to its daily high, near 0 means it's close to its daily low.
+> 💡 **Bid-Ask Spread**: The difference between the lowest price a seller will accept and the highest a buyer will pay. A narrow spread indicates high liquidity; a wide spread signals low liquidity or high uncertainty.\
+> 💡 **Volatility Indicator**:The indicator that shows where the current price sits within  the coin's 24-hour high-low range.A value near 1 means the price is close to its daily high, near 0 means it's close to its daily low.\
 > 💡 **OHLCV**: Open, High, Low, Close, Volume - standard financial data format for summarising price action over a time window.
 
 ## Architecture
@@ -44,12 +44,12 @@ A Python producer connects to the Coinbase WebSocket API and subscribes to the t
 Apache Flink (PyFlink) consumes tick messages from Redpanda and runs 
 the following transformations:
 
-1. **Deserialise** — bytes → `Tick` object
-2. **Enrich** — `Tick` → `EnrichedTick` (adds bid-ask spread)
-3. **Key by** — partition stream by `product_id` (320 sub-streams)
-4. **Window** — 1-minute tumbling event-time windows per product
-5. **Aggregate** — compute OHLCV metrics per window → `OHLCVRow`
-6. **Sink** — write to BigQuery via Google Cloud Python SDK
+1. **Deserialise**: bytes → `Tick` object
+2. **Enrich**:`Tick` → `EnrichedTick` (adds bid-ask spread)
+3. **Key by**: partition stream by `product_id` (320 sub-streams)
+4. **Window**: 1-minute tumbling event-time windows per product
+5. **Aggregate**: compute OHLCV metrics per window → `OHLCVRow`
+6. **Sink**: write to BigQuery via Google Cloud Python SDK
 
 ### 3. Storage
 - **Raw ticks** → Google Cloud Storage (for reprocessing/auditing)
