@@ -44,7 +44,7 @@ The pipeline processes data with sub-minute latency — from Coinbase WebSocket 
 > Click on the image to view it bigger.
 
 ### 1. Ingestion
-A Python producer connects to the Coinbase WebSocket API and subscribes to the ticker channel for 320+ USD trading pairs. Each ticker message is validated, parsed into a `Tick` object, serialised to JSON bytes and sent to a Redpanda topic.
+A Python producer connects to the Coinbase WebSocket API and subscribes to the ticker channel for 380+ USD trading pairs. Each ticker message is validated, parsed into a `Tick` object, serialised to JSON bytes and sent to a Redpanda topic.
 
 ### 2. Stream Processing
 Apache Flink (PyFlink) consumes tick messages from Redpanda and runs 
@@ -64,9 +64,12 @@ the following transformations:
 
 ## Dashboard
 Looker Studio connects directly to BigQuery and refreshes automatically, displaying:
-- Top 5 coins by average bid-ask spread (categorical)
-- Average price, spread and volatility over time (temporal)
+- Top 5 coins by average bid-ask spread, price and volatility (categorical)
+- Average price, spread and volatility over time for each coin (temporal)
+- Open-High-Low-Close (OHLC) price chart over time for each coin (temporal)
 [Looker Studio Dashboard](https://lookerstudio.google.com/reporting/32cf0abb-9e12-4ac3-b9f3-275159f07fb4)
+<img src="https://raw.githubusercontent.com/hamchang95/real_crypto/main/ref/dashboard_pg1.png" width="800" alt="Dashboard Overall Page">
+<img src="https://raw.githubusercontent.com/hamchang95/real_crypto/main/ref/dashboard_pg2.png" width="800" alt="Dashboard By Coin Page">
 
 ## Reproducing the Project
 
@@ -78,8 +81,8 @@ Looker Studio connects directly to BigQuery and refreshes automatically, display
 
 ### 1. Clone the Repository
 ```bash
-git clone https://github.com/yourusername/yourrepo.git
-cd yourrepo
+git clone https://github.com/hamchang95/real_crypto
+cd real_crypto
 ```
 
 ### 2. Set Up Google Cloud
@@ -118,9 +121,7 @@ This starts:
 
 ### 6. Create Redpanda Topic
 ```bash
-docker exec real_crypto-redpanda-1 rpk topic create ticks \
-    --partitions=50 \
-    --replicas=1
+docker exec real_crypto-redpanda-1 rpk topic create ticks --partitions=50 --replicas=1
 ```
 
 > [!NOTE]
@@ -130,9 +131,7 @@ docker exec real_crypto-redpanda-1 rpk topic create ticks \
 
 ### 7. Submit the Flink Job
 ```bash
-docker exec real_crypto-jobmanager-1 flink run \
-    -py /opt/flink/src/consume_ticks_tumble.py \
-    -pyfs /opt/flink/src
+docker exec real_crypto-jobmanager-1 flink run -py /opt/flink/src/consume_ticks_tumble.py -pyfs /opt/flink/src
 ```
 
 ### 8. Start the Producer

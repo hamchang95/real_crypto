@@ -107,6 +107,8 @@ class OHLCVRow:
     window_end: dt.datetime
     price_open: float
     price_close: float
+    price_high: float
+    price_low: float
     avg_price: float
     avg_volume: float
     avg_spread: float

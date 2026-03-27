@@ -56,6 +56,8 @@ resource "google_bigquery_table" "ohlcv" {
     { name = "window_end",    type = "TIMESTAMP", mode = "REQUIRED" },
     { name = "price_open",    type = "FLOAT64",   mode = "REQUIRED" },
     { name = "price_close",   type = "FLOAT64",   mode = "REQUIRED" },
+    { name = "price_low",    type = "FLOAT64",   mode = "REQUIRED" },
+    { name = "price_high",   type = "FLOAT64",   mode = "REQUIRED" },
     { name = "avg_price",     type = "FLOAT64",   mode = "REQUIRED" },
     { name = "avg_volume",  type = "FLOAT64",   mode = "REQUIRED" },
     { name = "avg_spread",    type = "FLOAT64",   mode = "REQUIRED" },

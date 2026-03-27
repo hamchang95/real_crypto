@@ -29,6 +29,8 @@ class OHLCVAggregator(ProcessWindowFunction):
         
         prices = [t.price for t in ticks]
         avg_price = sum(prices) / len(prices)
+        price_high = max(prices)  # highest tick price in the window
+        price_low  = min(prices)  # lowest tick price in the window
         volumes = [t.volume_24h for t in ticks]
         avg_volume = sum(volumes)/ len(volumes)
         spreads = [t.spread for t in ticks]
@@ -45,6 +47,8 @@ class OHLCVAggregator(ProcessWindowFunction):
             window_end=datetime.fromtimestamp(ctx.window().end / 1000, tz=timezone.utc),
             price_open=prices[0],
             price_close=prices[-1],
+            price_high = price_high,
+            price_low=price_low,
             avg_price = avg_price,
             avg_volume = avg_volume,
             avg_spread = avg_spread,
