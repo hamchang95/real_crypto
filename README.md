@@ -20,7 +20,7 @@ The pipeline processes data with sub-minute latency — from Coinbase WebSocket 
 > 💡 **OHLCV**: Open, High, Low, Close, Volume - standard financial data format for summarising price action over a time window.
 
 ## Architecture
-<img src="https://raw.githubusercontent.com/hamchang95/real_crypto/main/ref/hld.svg" width="800" alt="High Level Design">
+<img src="https://raw.githubusercontent.com/hamchang95/real_crypto/main/ref/hld.png" width="800" alt="High Level Design">
 
 ## Technologies Used
 | Component | Technology | Purpose |
@@ -32,10 +32,10 @@ The pipeline processes data with sub-minute latency — from Coinbase WebSocket 
 | Data Warehouse | Google BigQuery | Aggregated OHLCV windows, partitioned by day, clustered by product |
 | Dashboard | Looker Studio | Real-time visualisation of market microstructure |
 | Infrastructure | Terraform | Cloud resource provisioning |
-| Containerisation | Docker Compose | Local orchestration of Flink and Redpanda |
+| Containerisation | Docker | Local orchestration of Flink and Redpanda |
 
 ## Data Pipeline
-<img src="https://raw.githubusercontent.com/hamchang95/real_crypto/main/ref/lld.svg" width="800" alt="Low Level Design">
+<img src="https://raw.githubusercontent.com/hamchang95/real_crypto/main/ref/lld.png" width="800" alt="Low Level Design">
 
 ### 1. Ingestion
 A Python producer connects to the Coinbase WebSocket API and subscribes to the ticker channel for 320+ USD trading pairs. Each ticker message is validated, parsed into a `Tick` object, serialised to JSON bytes and sent to a Redpanda topic.
