@@ -28,10 +28,9 @@ The pipeline processes data with sub-minute latency — from Coinbase WebSocket 
 ## Technologies Used
 | Component | Technology | Purpose |
 |---|---|---|
-| Data Source | Coinbase WebSocket API | Live ticker feed for 320+ USD trading pairs |
+| Data Source | Coinbase WebSocket API | Live ticker feed for 380+ USD trading pairs |
 | Message Broker | Redpanda (Kafka-compatible) | Decouples producer from processing, buffers tick messages |
 | Stream Processor | Apache Flink (PyFlink) | 1-minute tumbling window aggregations |
-| Data Lake | Google Cloud Storage | Raw tick storage for reprocessing |
 | Data Warehouse | Google BigQuery | Aggregated OHLCV windows, partitioned by day, clustered by product |
 | Dashboard | Looker Studio | Real-time visualisation of market microstructure |
 | Infrastructure | Terraform | Cloud resource provisioning |
@@ -57,10 +56,19 @@ the following transformations:
 5. **Aggregate**: compute OHLCV metrics per window → `OHLCVRow`
 6. **Sink**: write to BigQuery via Google Cloud Python SDK
 
-### 3. Storage
-- **Raw ticks** → Google Cloud Storage (for reprocessing/auditing)
-- **Aggregated OHLCV windows** → BigQuery, partitioned by day on 
+### 3. Data Warehouse
+- **Aggregated OHLCV windows** → BigQuery, partitioned by hour on 
   `window_start`, clustered by `product_id`
+    - **Partitioning** on `window_start` (hourly — the most granular 
+      level BigQuery supports) optimises time-range queries, which are 
+      the most common access pattern for a time series dashboard. 
+      Queries filtering by a specific time window only scan the relevant 
+      hourly partitions rather than the full table.
+    - **Clustering** on `product_id` means rows for the same coin are 
+      stored together within each partition. Since dashboard queries 
+      almost always filter by a specific product (e.g. `WHERE product_id 
+      = 'BTC-USD'`), this significantly reduces bytes scanned and 
+      therefore query cost and latency.
 
 ## Dashboard
 Looker Studio connects directly to BigQuery and refreshes automatically, displaying:
