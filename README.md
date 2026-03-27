@@ -84,7 +84,6 @@ cd yourrepo
 
 ### 3. Provision Infrastructure with Terraform
 ```bash
-cd terraform
 terraform init
 terraform plan
 terraform apply
