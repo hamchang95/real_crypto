@@ -51,7 +51,7 @@ the following transformations:
 
 1. **Deserialise**: bytes → `Tick` object
 2. **Enrich**:`Tick` → `EnrichedTick` (adds bid-ask spread)
-3. **Key by**: partition stream by `product_id` (320 sub-streams)
+3. **Key by**: partition stream by `product_id` (380+ sub-streams)
 4. **Window**: 1-minute tumbling event-time windows per product
 5. **Aggregate**: compute OHLCV metrics per window → `OHLCVRow`
 6. **Sink**: write to BigQuery via Google Cloud Python SDK
