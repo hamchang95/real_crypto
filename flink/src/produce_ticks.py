@@ -9,6 +9,7 @@ from models import Tick, tick_from_dict, tick_serialiser
 from kafka import KafkaProducer
 from kafka.errors import NoBrokersAvailable
 import requests
+import json
 
 # set up
 load_dotenv()
@@ -70,12 +71,27 @@ def main():
     secret = os.getenv('COINBASE_API_SECRET')
 
     def on_message(msg):
-        ticks = tick_from_dict(msg)
-        if not ticks:
-            return
-        for t in ticks:
-            producer.send(topic_name, value=t)
-            print(f'Sent {t}')
+        try:
+            ticks = tick_from_dict(msg)
+            if not ticks:
+                return
+            for t in ticks:
+                producer.send(topic_name, value=t)
+                print(f'Sent {t}')
+        except ValueError as e:
+            # route to dead letter
+            producer.send(
+                'ticks-dead-letter',
+                value=json.dumps({
+                    "raw_message": msg,
+                    "error": str(e),
+                    "timestamp": dt.datetime.utcnow().isoformat()
+                }).encode()
+            )
+            print(f'Dead lettered malformed message: {e}')
+        except Exception as e:
+            # unexpected error - log but don't crash the connection
+            print(f'Unexpected error processing message: {e}')
 
     def on_open():
         print("Connection opened!")
