@@ -73,7 +73,7 @@ def tick_from_dict(raw: str) -> list[Tick]:
             num_fields = [price, volume, low, high, best_ask, best_bid]
 
             if any(f<=0 for f in num_fields):
-                raise ValueError(f'Non-positive numeric field: {price}, {volume}, {low}, {high}, {chg}, {best_ask}, {best_bid}')
+                raise ValueError(f'Non-positive numeric field: {price}, {volume}, {low}, {high}, {best_ask}, {best_bid}')
             
             ticks.append(Tick(
                 timestamp=ts_num,
