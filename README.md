@@ -123,6 +123,7 @@ COINBASE_API_SECRET=your_api_secret
 docker compose up -d
 ```
 This starts:
+- Producer (Coinbase WebSocket → Redpanda)
 - Redpanda (message broker)
 - Flink JobManager
 - Flink TaskManager
@@ -142,20 +143,13 @@ docker exec real_crypto-redpanda-1 rpk topic create ticks --partitions=50 --repl
 docker exec real_crypto-jobmanager-1 flink run -py /opt/flink/src/consume_ticks_tumble.py -pyfs /opt/flink/src
 ```
 
-### 8. Start the Producer
-Install dependencies using uv:
-```bash
-uv sync
-```
-This project has two separate dependency sets:
+This project has a dependency set:
 
 | File | Purpose |
 |---|---|
-| `pyproject.toml` | Producer dependencies (runs locally via uv) |
 | `flink/pyproject.flink.toml` | PyFlink job dependencies (runs inside Docker) |
 
 The Flink dependencies are installed automatically when the Docker image is built.
-You only need to run `uv sync` for the producer.
 
 Run producer for 1 hour:
 ```bash
@@ -176,6 +170,7 @@ real_crypto/
 │   │   ├── consume_ticks_tumble.py    # PyFlink job — stream processing pipeline
 │   │   ├── produce_ticks.py           # Coinbase WebSocket → Redpanda producer
 │   │   └── models.py                  # Tick, EnrichedTick, OHLCVRow dataclasses
+│   ├── Dockerfile.producer            # Producer image
 │   ├── Dockerfile.flink               # Flink image with PyFlink and connector JARs
 │   ├── flink-config.yaml              # Flink cluster configuration
 │   └── pyproject.flink.toml          # PyFlink job dependencies
