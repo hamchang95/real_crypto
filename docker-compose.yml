@@ -1,4 +1,12 @@
 services:
+  producer:
+    build:
+      context: .
+      dockerfile: flink/Dockerfile.producer
+    env_file: .env
+    environment:
+    KAFKA_BOOTSTRAP_SERVERS: redpanda:9092
+    restart: unless-stopped
   redpanda:
     image: redpandadata/redpanda:v25.3.10
     volumes:
